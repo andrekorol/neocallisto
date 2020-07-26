@@ -1,18 +1,21 @@
-import Paper from "@material-ui/core/Paper";
 import { createMuiTheme, Theme, ThemeProvider } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LandingPage from "../landing-page/LandingPage";
 import TopBar from "../topbar";
 import "./App.css";
 
 const App = () => {
+  const [darkMode, setDarkMode] = useState(false);
+
   const prefersDarkMode: boolean = useMediaQuery(
     "(prefers-color-scheme: dark)"
   );
 
-  const [darkMode, setDarkMode] = useState(prefersDarkMode);
+  useEffect(() => {
+    setDarkMode(prefersDarkMode);
+  }, [prefersDarkMode]);
 
   const theme: Theme = useMemo(
     () =>
@@ -27,13 +30,19 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <TopBar darkMode={darkMode} setDarkMode={setDarkMode} />
-      <Paper style={{ height: "100vh" }}>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<LandingPage darkMode={darkMode} />} />
-          </Routes>
-        </BrowserRouter>
-      </Paper>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route
+            path="register"
+            element={
+              <div>
+                <h1>hi</h1>
+              </div>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
     </ThemeProvider>
   );
 };
