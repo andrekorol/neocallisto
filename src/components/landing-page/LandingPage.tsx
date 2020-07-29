@@ -15,7 +15,7 @@ import sun2 from "../../assets/images/sun2.png";
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     paper: {
-      // marginTop: theme.spacing(8),
+      marginTop: theme.spacing(4),
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
