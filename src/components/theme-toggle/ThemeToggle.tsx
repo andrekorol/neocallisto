@@ -25,7 +25,7 @@ type ToggleProps = {
 };
 
 const ThemeToggle = ({ darkMode, setDarkMode }: ToggleProps) => {
-  const darkIcon = "🌙";
+  const darkIcon = "🌜";
   const darkIconStyle = { marginTop: "1px", marginLeft: "2px" };
   const lightIcon = "🌞";
   const lightIconStyle = { marginTop: "1px", marginLeft: "1px" };
