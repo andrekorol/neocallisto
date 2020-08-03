@@ -2,7 +2,7 @@ import { createMuiTheme, Theme, ThemeProvider } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import React, { useEffect, useMemo, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import LandingPage from "../landing-page/LandingPage";
+import LandingPage from "../landing-page";
 import TopBar from "../topbar";
 import "./App.css";
 

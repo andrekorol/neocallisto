@@ -1,9 +1,8 @@
 import AppBar from "@material-ui/core/AppBar";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import Switch from "@material-ui/core/Switch";
 import Toolbar from "@material-ui/core/Toolbar";
 import React from "react";
+import ThemeToggle from "../theme-toggle";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -24,16 +23,9 @@ const TopBar = ({ darkMode, setDarkMode }: TopBarProps) => {
   return (
     <AppBar position="static">
       <Toolbar>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={darkMode}
-              onChange={() => setDarkMode(!darkMode)}
-            />
-          }
-          label="Dark Mode"
-          className={classes.themeToggle}
-        />
+        <div className={classes.themeToggle}>
+          <ThemeToggle darkMode={darkMode} setDarkMode={setDarkMode} />
+        </div>
       </Toolbar>
     </AppBar>
   );
