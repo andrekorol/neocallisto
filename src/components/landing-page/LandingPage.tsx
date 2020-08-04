@@ -4,13 +4,14 @@ import Button from "@material-ui/core/Button";
 import Container from "@material-ui/core/Container";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import ParticlesBg from "particles-bg";
-import React from "react";
-import Sky from "react-sky";
+import React, { Suspense } from "react";
 import satellite1 from "../../assets/images/satellite1.png";
 import satellite2 from "../../assets/images/satellite2.png";
 import sun1 from "../../assets/images/sun1.png";
 import sun2 from "../../assets/images/sun2.png";
+
+const Sky = React.lazy(() => import("react-sky"));
+const ParticlesBg = React.lazy(() => import("particles-bg"));
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -31,17 +32,19 @@ const LandingPage = () => {
       <Container component="main">
         <CssBaseline />
         <div className={classes.paper}>
-          <Sky
-            images={{
-              0: satellite1,
-              1: satellite2,
-              2: sun1,
-              3: sun2,
-            }}
-            how={40}
-            time={40}
-            size={"100px"}
-          />
+          <Suspense fallback={<div />}>
+            <Sky
+              images={{
+                0: satellite1,
+                1: satellite2,
+                2: sun1,
+                3: sun2,
+              }}
+              how={40}
+              time={40}
+              size={"100px"}
+            />
+          </Suspense>
           <Box my={4} className={classes.paper}>
             <Typography variant="h1" component="h1" gutterBottom>
               NeoCallisto
@@ -52,7 +55,12 @@ const LandingPage = () => {
             </Typography>
           </Box>
           <Box my={4} className={classes.paper}>
-            <Button variant="contained" color="primary" size="large">
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              href="register"
+            >
               Sign Up to start using the app
             </Button>
             <Typography variant="h5">OR</Typography>
@@ -62,7 +70,9 @@ const LandingPage = () => {
           </Box>
         </div>
       </Container>
-      <ParticlesBg type="cobweb" bg />
+      <Suspense fallback={<div />}>
+        <ParticlesBg type="cobweb" bg />
+      </Suspense>
     </div>
   );
 };
