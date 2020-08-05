@@ -1,10 +1,13 @@
 import { createMuiTheme, Theme, ThemeProvider } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import LandingPage from "../landing-page";
+import Loading from "../loading";
 import TopBar from "../topbar";
 import "./App.css";
+
+const LandingPage = lazy(() => import("../landing-page"));
+const Register = lazy(() => import("../register"));
 
 const App = () => {
   const [darkMode, setDarkMode] = useState(false);
@@ -31,17 +34,19 @@ const App = () => {
     <ThemeProvider theme={theme}>
       <TopBar darkMode={darkMode} setDarkMode={setDarkMode} />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route
-            path="register"
-            element={
-              <div>
-                <h1>hi</h1>
-              </div>
-            }
-          />
-        </Routes>
+        <Suspense
+          fallback={
+            <Loading
+              type="spinningBubbles"
+              color={theme.palette.primary.main}
+            />
+          }
+        >
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="register" element={<Register />} />
+          </Routes>
+        </Suspense>
       </BrowserRouter>
     </ThemeProvider>
   );
