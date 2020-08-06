@@ -5,6 +5,7 @@ import Container from "@material-ui/core/Container";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import React, { Suspense } from "react";
+import { useNavigate } from "react-router-dom";
 import satellite1 from "../../assets/images/satellite1.png";
 import satellite2 from "../../assets/images/satellite2.png";
 import sun1 from "../../assets/images/sun1.png";
@@ -26,6 +27,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const LandingPage = () => {
   const classes = useStyles();
+
+  const navigate = useNavigate();
 
   return (
     <div>
@@ -59,7 +62,7 @@ const LandingPage = () => {
               variant="contained"
               color="primary"
               size="large"
-              href="register"
+              onClick={() => navigate("register")}
             >
               Sign Up to start using the app
             </Button>
