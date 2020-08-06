@@ -1,24 +1,23 @@
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 import {
   Avatar,
   Button,
   Container,
   CssBaseline,
-  InputAdornment,
   LinearProgress,
   Typography,
 } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import VisibilityIcon from "@material-ui/icons/Visibility";
-import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import { Field, Form, Formik } from "formik";
-import { TextField, TextFieldProps } from "formik-material-ui";
-import React, { Suspense, useState } from "react";
+import { TextField } from "formik-material-ui";
+import React, { createRef } from "react";
 import * as Yup from "yup";
+import { PasswordInput } from "./PasswordInput";
 
-const PasswordStrengthBar = React.lazy(() =>
-  import("react-password-strength-bar")
-);
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -42,53 +41,13 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const PasswordInput = (props: TextFieldProps) => {
-  const classes = useStyles();
-
-  const [passwordIsMasked, setPasswordIsMasked] = useState(true);
-
-  const togglePasswordMask = () => {
-    setPasswordIsMasked(!passwordIsMasked);
-  };
-
-  const password = props.form.values.password;
-
-  return (
-    <>
-      <TextField
-        type={passwordIsMasked ? "password" : "text"}
-        {...props}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="end">
-              {passwordIsMasked ? (
-                <VisibilityIcon
-                  className={classes.eye}
-                  onClick={togglePasswordMask}
-                />
-              ) : (
-                <VisibilityOffIcon
-                  className={classes.eye}
-                  onClick={togglePasswordMask}
-                />
-              )}
-            </InputAdornment>
-          ),
-        }}
-      />
-      <Suspense fallback={<div />}>
-        {password !== "" ? (
-          <PasswordStrengthBar password={password} />
-        ) : (
-          <div />
-        )}
-      </Suspense>
-    </>
-  );
-};
-
 const Register = () => {
   const classes = useStyles();
+
+  const captchaRef = createRef<HCaptcha>();
+
+  const siteKey = "c48a4bdf-cab5-4a46-b23f-35a39125f592";
+  console.log(process.env);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -106,13 +65,14 @@ const Register = () => {
             name: "",
             username: "",
             password: "",
+            captcha: "",
           }}
           validationSchema={Yup.object({
             email: Yup.string()
               .email("Invalid email address")
               .required("Required"),
             name: Yup.string()
-              .max(32, "Must be 32 characters or less")
+              .max(128, "Must be 128 characters or less")
               .required("Required"),
             username: Yup.string()
               .max(32, "Must be 32 characters or less")
@@ -121,6 +81,7 @@ const Register = () => {
               .min(8, "Must be at least 8 characters")
               .max(100, "Must be 100 characters or less")
               .required("Required"),
+            captcha: Yup.string().required("Must prove that you are a human"),
           })}
           onSubmit={(values, { setSubmitting }) => {
             setTimeout(() => {
@@ -129,7 +90,7 @@ const Register = () => {
             }, 400);
           }}
         >
-          {({ submitForm, isSubmitting }) => (
+          {({ submitForm, isSubmitting, setFieldValue }) => (
             <Form className={classes.form}>
               <Field
                 component={TextField}
@@ -168,8 +129,13 @@ const Register = () => {
                 margin="normal"
                 fullWidth
                 name="password"
-                label="Password (6+ characters)"
+                label="Password (8+ characters)"
                 autoComplete="password"
+              />
+              <HCaptcha
+                ref={captchaRef}
+                sitekey={siteKey}
+                onVerify={(token) => setFieldValue("captcha", token)}
               />
               {isSubmitting && <LinearProgress />}
               <Button
