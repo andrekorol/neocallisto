@@ -1,10 +1,10 @@
 import AppBar from "@material-ui/core/AppBar";
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import { createStyles, makeStyles } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import React from "react";
 import ThemeToggle from "../theme-toggle";
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     themeToggle: {
       marginLeft: "auto",

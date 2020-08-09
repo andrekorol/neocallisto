@@ -1,5 +1,5 @@
 import InputAdornment from "@material-ui/core/InputAdornment";
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import { createStyles, makeStyles } from "@material-ui/core/styles";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import { TextField, TextFieldProps } from "formik-material-ui";
@@ -9,7 +9,7 @@ const PasswordStrengthBar = React.lazy(() =>
   import("react-password-strength-bar")
 );
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     eye: {
       cursor: "pointer",
