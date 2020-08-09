@@ -1,4 +1,3 @@
-import HCaptcha from "@hcaptcha/react-hcaptcha";
 import {
   Avatar,
   Button,
@@ -7,13 +6,22 @@ import {
   LinearProgress,
   Typography,
 } from "@material-ui/core";
+import IconButton from "@material-ui/core/IconButton";
+import Snackbar, { SnackbarCloseReason } from "@material-ui/core/Snackbar";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import CloseIcon from "@material-ui/icons/Close";
+import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
+import axios from "axios";
 import { Field, Form, Formik } from "formik";
-import { TextField } from "formik-material-ui";
-import React, { createRef } from "react";
+import { CheckboxWithLabel, TextField } from "formik-material-ui";
+import React, { createRef, Suspense, useEffect, useState } from "react";
 import * as Yup from "yup";
+import Loading from "../loading";
+import HCaptchaComponent from "./HCaptcha";
 import { PasswordInput } from "./PasswordInput";
+
+const HCaptcha = React.lazy(() => import("@hcaptcha/react-hcaptcha"));
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
@@ -38,16 +46,45 @@ const useStyles = makeStyles((theme: Theme) =>
     eye: {
       cursor: "pointer",
     },
+    closeButton: {
+      padding: theme.spacing(0.5),
+    },
   })
 );
+
+const Alert = (props: AlertProps) => {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+};
 
 const Register = () => {
   const classes = useStyles();
 
-  const captchaRef = createRef<HCaptcha>();
+  const [captchaError, setCaptchaError] = useState(false);
+  const [termsError, setTermsError] = useState(false);
 
-  const siteKey = "c48a4bdf-cab5-4a46-b23f-35a39125f592";
-  console.log(process.env);
+  const [siteKey, setSiteKey] = useState("");
+  const [seed, setSeed] = useState(new Uint8Array());
+
+  useEffect(() => {
+    axios.get("/admin/sitekey").then((resp) => setSiteKey(resp.data));
+    axios
+      .get("/admin/seed")
+      .then((res) => setSeed(Uint8Array.from(Object.values(res.data))));
+  }, []);
+
+  const handleClose = (
+    _: React.SyntheticEvent<any>,
+    reason: SnackbarCloseReason,
+    setError: (value: React.SetStateAction<boolean>) => void
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setError(false);
+  };
+
+  const captchaRef = createRef<HCaptchaComponent>();
 
   return (
     <Container component="main" maxWidth="xs">
@@ -65,6 +102,7 @@ const Register = () => {
             name: "",
             username: "",
             password: "",
+            acceptedTerms: false,
             captcha: "",
           }}
           validationSchema={Yup.object({
@@ -81,16 +119,53 @@ const Register = () => {
               .min(8, "Must be at least 8 characters")
               .max(100, "Must be 100 characters or less")
               .required("Required"),
-            captcha: Yup.string().required("Must prove that you are a human"),
           })}
           onSubmit={(values, { setSubmitting }) => {
-            setTimeout(() => {
-              alert(JSON.stringify(values, null, 2));
+            if (!values.acceptedTerms) {
+              setTermsError(true);
               setSubmitting(false);
-            }, 400);
+              return;
+            }
+
+            if (!values.captcha) {
+              setCaptchaError(true);
+              setSubmitting(false);
+              return;
+            }
+
+            import("libsodium-wrappers").then((_sodium) => {
+              (async () => {
+                await _sodium.ready;
+                const sodium = _sodium.default;
+                const passwordHash = sodium.crypto_pwhash(
+                  sodium.crypto_pwhash_BYTES_MIN,
+                  values.password,
+                  seed,
+                  sodium.crypto_pwhash_OPSLIMIT_INTERACTIVE,
+                  sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE,
+                  sodium.crypto_pwhash_ALG_DEFAULT
+                );
+                axios
+                  .post(
+                    "/api/users",
+                    Object.assign(values, {
+                      password: passwordHash,
+                      salt: seed,
+                    })
+                  )
+                  .then(() => {
+                    alert("Account created sucessfully");
+                  })
+                  .catch(() => {
+                    captchaRef.current?.resetCaptcha();
+                    setSubmitting(false);
+                    alert("Could not create account, please try again");
+                  });
+              })();
+            });
           }}
         >
-          {({ submitForm, isSubmitting, setFieldValue }) => (
+          {({ submitForm, isSubmitting, setFieldValue, values }) => (
             <Form className={classes.form}>
               <Field
                 component={TextField}
@@ -101,7 +176,6 @@ const Register = () => {
                 type="email"
                 label="Email"
                 autoComplete="email"
-                autoFocus
               />
               <Field
                 component={TextField}
@@ -132,17 +206,76 @@ const Register = () => {
                 label="Password (8+ characters)"
                 autoComplete="password"
               />
-              <HCaptcha
-                ref={captchaRef}
-                sitekey={siteKey}
-                onVerify={(token) => setFieldValue("captcha", token)}
+              <Field
+                component={CheckboxWithLabel}
+                name="acceptedTerms"
+                Label={{
+                  label:
+                    "I have read and accept the Terms and Conditions/Privacy Policy",
+                  error: !values.acceptedTerms,
+                }}
               />
+              <Suspense fallback={<Loading />}>
+                <Field
+                  name="captcha"
+                  component={HCaptcha}
+                  ref={captchaRef}
+                  sitekey={siteKey}
+                  onVerify={(token: string) => {
+                    setFieldValue("captcha", token);
+                    setCaptchaError(false);
+                  }}
+                />
+              </Suspense>
+              <Snackbar
+                open={termsError}
+                autoHideDuration={6000}
+                onClose={(
+                  event: React.SyntheticEvent<any>,
+                  reason: SnackbarCloseReason
+                ) => handleClose(event, reason, setTermsError)}
+                anchorOrigin={{ horizontal: "center", vertical: "top" }}
+              >
+                <Alert severity="warning">
+                  You must accept the terms and conditions
+                  <IconButton
+                    aria-label="close"
+                    color="inherit"
+                    className={classes.closeButton}
+                    onClick={() => setTermsError(false)}
+                  >
+                    <CloseIcon />
+                  </IconButton>
+                </Alert>
+              </Snackbar>
+              <Snackbar
+                open={captchaError}
+                autoHideDuration={6000}
+                onClose={(
+                  event: React.SyntheticEvent<any>,
+                  reason: SnackbarCloseReason
+                ) => handleClose(event, reason, setCaptchaError)}
+                anchorOrigin={{ horizontal: "center", vertical: "top" }}
+              >
+                <Alert severity="error">
+                  You must prove that you are a human
+                  <IconButton
+                    aria-label="close"
+                    color="inherit"
+                    className={classes.closeButton}
+                    onClick={() => setCaptchaError(false)}
+                  >
+                    <CloseIcon />
+                  </IconButton>
+                </Alert>
+              </Snackbar>
               {isSubmitting && <LinearProgress />}
               <Button
                 variant="contained"
                 color="primary"
                 disabled={isSubmitting}
                 onClick={submitForm}
+                fullWidth
               >
                 Submit
               </Button>

@@ -5,7 +5,7 @@ if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
 
-const initDB = () => {
+exports.initDB = () => {
   if (process.env.MONGODB_URI) {
     mongoose
       .connect(process.env.MONGODB_URI.toString(), {
@@ -21,5 +21,3 @@ const initDB = () => {
     console.error("Missing MONGODB_URI environment variable");
   }
 };
-
-exports.initDB = initDB;
