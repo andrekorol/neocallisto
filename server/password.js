@@ -1,6 +1,6 @@
 const _sodium = require("libsodium-wrappers");
 
-exports.seed = async () => {
+exports.getSeed = async () => {
   await _sodium.ready;
   const sodium = _sodium;
   const seed = await sodium.randombytes_buf(sodium.crypto_pwhash_SALTBYTES);

@@ -5,7 +5,7 @@ const path = require("path");
 const { initDB } = require("./server/database");
 const http = require("http");
 const history = require("connect-history-api-fallback");
-const { seed } = require("./server/password");
+const { getSeed } = require("./server/password");
 const users = require("./api/users");
 
 if (process.env.NODE_ENV !== "production") {
@@ -30,7 +30,7 @@ app.get("/admin/sitekey", (_, res) => {
 });
 
 app.get("/admin/seed", (req, res) => {
-  seed()
+  getSeed()
     .then((buf) => {
       console.log(buf);
       res.status(200).send(buf);
