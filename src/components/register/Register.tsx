@@ -17,6 +17,7 @@ import { Field, Form, Formik } from "formik";
 import { CheckboxWithLabel, TextField } from "formik-material-ui";
 import React, { createRef, Suspense, useEffect, useState } from "react";
 import * as Yup from "yup";
+import { getHash } from "../../server/password";
 import Loading from "../loading";
 import HCaptchaComponent from "./HCaptcha";
 import { PasswordInput } from "./PasswordInput";
@@ -133,18 +134,8 @@ const Register = () => {
               return;
             }
 
-            import("libsodium-wrappers").then((_sodium) => {
-              (async () => {
-                await _sodium.ready;
-                const sodium = _sodium.default;
-                const passwordHash = sodium.crypto_pwhash(
-                  sodium.crypto_pwhash_BYTES_MIN,
-                  values.password,
-                  seed,
-                  sodium.crypto_pwhash_OPSLIMIT_INTERACTIVE,
-                  sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE,
-                  sodium.crypto_pwhash_ALG_DEFAULT
-                );
+            getHash(values.password, seed)
+              .then((passwordHash) => {
                 axios
                   .post(
                     "/api/users",
@@ -155,14 +146,13 @@ const Register = () => {
                   )
                   .then(() => {
                     alert("Account created sucessfully");
-                  })
-                  .catch(() => {
-                    captchaRef.current?.resetCaptcha();
-                    setSubmitting(false);
-                    alert("Could not create account, please try again");
                   });
-              })();
-            });
+              })
+              .catch(() => {
+                captchaRef.current?.resetCaptcha();
+                setSubmitting(false);
+                alert("Could not create account, please try again");
+              });
           }}
         >
           {({ submitForm, isSubmitting, setFieldValue, values }) => (
