@@ -2,11 +2,11 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const express = require("express");
 const path = require("path");
-const { initDB } = require("./server/database");
+const { initDB } = require("./src/server/database");
 const http = require("http");
 const history = require("connect-history-api-fallback");
-const { getSeed } = require("./server/password");
-const users = require("./api/users");
+const { getSeed } = require("./src/server/password");
+const users = require("./src/api/users");
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
