@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
-import Snackbar, { SnackbarCloseReason } from "@material-ui/core/Snackbar";
+import Snackbar from "@material-ui/core/Snackbar";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import CloseIcon from "@material-ui/icons/Close";
@@ -17,8 +17,8 @@ import { Field, Form, Formik } from "formik";
 import { CheckboxWithLabel, TextField } from "formik-material-ui";
 import React, { createRef, Suspense, useEffect, useState } from "react";
 import * as Yup from "yup";
-import { getHash } from "../../server/password";
 import Loading from "../loading";
+import getHash from "./hash";
 import HCaptchaComponent from "./HCaptcha";
 import { PasswordInput } from "./PasswordInput";
 
@@ -60,8 +60,8 @@ const Alert = (props: AlertProps) => {
 const Register = () => {
   const classes = useStyles();
 
-  const [captchaError, setCaptchaError] = useState(false);
-  const [termsError, setTermsError] = useState(false);
+  const [formError, setFormError] = useState(false);
+  const [snackBarMessage, setSnackBarMessage] = useState("");
 
   const [siteKey, setSiteKey] = useState("");
   const [seed, setSeed] = useState(new Uint8Array());
@@ -72,18 +72,6 @@ const Register = () => {
       .get("/admin/seed")
       .then((res) => setSeed(Uint8Array.from(Object.values(res.data))));
   }, []);
-
-  const handleClose = (
-    _: React.SyntheticEvent<any>,
-    reason: SnackbarCloseReason,
-    setError: (value: React.SetStateAction<boolean>) => void
-  ) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setError(false);
-  };
 
   const captchaRef = createRef<HCaptchaComponent>();
 
@@ -123,13 +111,15 @@ const Register = () => {
           })}
           onSubmit={(values, { setSubmitting }) => {
             if (!values.acceptedTerms) {
-              setTermsError(true);
+              setSnackBarMessage("You must accept the terms and conditions");
+              setFormError(true);
               setSubmitting(false);
               return;
             }
 
             if (!values.captcha) {
-              setCaptchaError(true);
+              setSnackBarMessage("You must prove that you are a human");
+              setFormError(true);
               setSubmitting(false);
               return;
             }
@@ -145,6 +135,8 @@ const Register = () => {
                     })
                   )
                   .then(() => {
+                    captchaRef.current?.resetCaptcha();
+                    setSubmitting(false);
                     alert("Account created sucessfully");
                   });
               })
@@ -213,47 +205,29 @@ const Register = () => {
                   sitekey={siteKey}
                   onVerify={(token: string) => {
                     setFieldValue("captcha", token);
-                    setCaptchaError(false);
+                    setFormError(false);
                   }}
                 />
               </Suspense>
               <Snackbar
-                open={termsError}
+                open={formError}
                 autoHideDuration={6000}
-                onClose={(
-                  event: React.SyntheticEvent<any>,
-                  reason: SnackbarCloseReason
-                ) => handleClose(event, reason, setTermsError)}
-                anchorOrigin={{ horizontal: "center", vertical: "top" }}
-              >
-                <Alert severity="warning">
-                  You must accept the terms and conditions
-                  <IconButton
-                    aria-label="close"
-                    color="inherit"
-                    className={classes.closeButton}
-                    onClick={() => setTermsError(false)}
-                  >
-                    <CloseIcon />
-                  </IconButton>
-                </Alert>
-              </Snackbar>
-              <Snackbar
-                open={captchaError}
-                autoHideDuration={6000}
-                onClose={(
-                  event: React.SyntheticEvent<any>,
-                  reason: SnackbarCloseReason
-                ) => handleClose(event, reason, setCaptchaError)}
+                onClose={(_, reason) => {
+                  if (reason === "clickaway") {
+                    return;
+                  }
+
+                  setFormError(false);
+                }}
                 anchorOrigin={{ horizontal: "center", vertical: "top" }}
               >
                 <Alert severity="error">
-                  You must prove that you are a human
+                  {snackBarMessage}
                   <IconButton
                     aria-label="close"
                     color="inherit"
                     className={classes.closeButton}
-                    onClick={() => setCaptchaError(false)}
+                    onClick={() => setFormError(false)}
                   >
                     <CloseIcon />
                   </IconButton>
