@@ -32,7 +32,6 @@ app.get("/admin/sitekey", (_, res) => {
 app.get("/admin/seed", (req, res) => {
   getSeed()
     .then((buf) => {
-      console.log(buf);
       res.status(200).send(buf);
     })
     .catch(() => {
