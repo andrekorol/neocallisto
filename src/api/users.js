@@ -20,17 +20,17 @@ router.post("/", (req, res) => {
     const newUser = new User({ email, name, username, salt, hash });
     newUser
       .save()
-      .then(() =>
+      .then(() => {
         res.json({
           message: "Created account successfully",
-        })
-      )
-      .catch((err) =>
+        });
+      })
+      .catch((err) => {
         res.status(400).json({
+          message: "Error creating account.",
           error: err,
-          message: "Error creating account",
-        })
-      );
+        });
+      });
   });
 });
 

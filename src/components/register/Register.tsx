@@ -18,14 +18,23 @@ import { CheckboxWithLabel, TextField } from "formik-material-ui";
 import React, { createRef, Suspense, useEffect, useState } from "react";
 import * as Yup from "yup";
 import Loading from "../loading";
-import getHash from "./hash";
 import HCaptchaComponent from "./HCaptcha";
+import scryptHash from "./password-hash";
 import { PasswordInput } from "./PasswordInput";
 
 const HCaptcha = React.lazy(() => import("@hcaptcha/react-hcaptcha"));
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
+}
+
+interface MyFormValues {
+  email: string;
+  name: string;
+  username: string;
+  password: string;
+  acceptedTerms: boolean;
+  captcha: string;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -57,7 +66,16 @@ const Alert = (props: AlertProps) => {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 };
 
-const Register = () => {
+const Register: React.FC<{}> = () => {
+  const initialValues: MyFormValues = {
+    email: "",
+    name: "",
+    username: "",
+    password: "",
+    acceptedTerms: false,
+    captcha: "",
+  };
+
   const classes = useStyles();
 
   const [formError, setFormError] = useState(false);
@@ -86,14 +104,7 @@ const Register = () => {
           Create account
         </Typography>
         <Formik
-          initialValues={{
-            email: "",
-            name: "",
-            username: "",
-            password: "",
-            acceptedTerms: false,
-            captcha: "",
-          }}
+          initialValues={initialValues}
           validationSchema={Yup.object({
             email: Yup.string()
               .email("Invalid email address")
@@ -109,45 +120,59 @@ const Register = () => {
               .max(100, "Must be 100 characters or less")
               .required("Required"),
           })}
-          onSubmit={(values, { setSubmitting }) => {
+          onSubmit={(values, actions) => {
             if (!values.acceptedTerms) {
               setSnackBarMessage("You must accept the terms and conditions");
               setFormError(true);
-              setSubmitting(false);
+              actions.setSubmitting(false);
               return;
             }
 
             if (!values.captcha) {
               setSnackBarMessage("You must prove that you are a human");
               setFormError(true);
-              setSubmitting(false);
+              actions.setSubmitting(false);
               return;
             }
 
-            getHash(values.password, seed)
-              .then((passwordHash) => {
-                axios
-                  .post(
-                    "/api/users",
-                    Object.assign(values, {
-                      password: passwordHash,
-                      salt: seed,
-                    })
-                  )
-                  .then(() => {
-                    captchaRef.current?.resetCaptcha();
-                    setSubmitting(false);
-                    alert("Account created sucessfully");
-                  });
-              })
-              .catch(() => {
-                captchaRef.current?.resetCaptcha();
-                setSubmitting(false);
-                alert("Could not create account, please try again");
-              });
+            scryptHash(values.password, seed).then((passwordHash) => {
+              axios
+                .post(
+                  "/api/users",
+                  Object.assign({}, values, {
+                    password: passwordHash,
+                    salt: seed,
+                  })
+                )
+                .then(() => {
+                  captchaRef.current?.resetCaptcha();
+                  actions.setSubmitting(false);
+                  alert("Account created sucessfully");
+                })
+                .catch((err) => {
+                  actions.setSubmitting(false);
+                  const { error, message } = err.response?.data;
+
+                  if (error.keyValue.email) {
+                    actions.setFieldError(
+                      "email",
+                      "There's already an account registered with that email"
+                    );
+                  } else if (error.keyValue.username) {
+                    actions.setFieldError(
+                      "username",
+                      "Username already in use"
+                    );
+                  }
+
+                  setSnackBarMessage(
+                    `${message} Please check the form fields and then try again.`
+                  );
+                  setFormError(true);
+                });
+            });
           }}
-        >
-          {({ submitForm, isSubmitting, setFieldValue, values }) => (
+          render={(formikBag) => (
             <Form className={classes.form}>
               <Field
                 component={TextField}
@@ -194,7 +219,7 @@ const Register = () => {
                 Label={{
                   label:
                     "I have read and accept the Terms and Conditions/Privacy Policy",
-                  error: !values.acceptedTerms,
+                  error: !formikBag.values.acceptedTerms,
                 }}
               />
               <Suspense fallback={<Loading />}>
@@ -203,10 +228,9 @@ const Register = () => {
                   component={HCaptcha}
                   ref={captchaRef}
                   sitekey={siteKey}
-                  onVerify={(token: string) => {
-                    setFieldValue("captcha", token);
-                    setFormError(false);
-                  }}
+                  onVerify={(token: string) =>
+                    formikBag.setFieldValue("captcha", token)
+                  }
                 />
               </Suspense>
               <Snackbar
@@ -233,19 +257,19 @@ const Register = () => {
                   </IconButton>
                 </Alert>
               </Snackbar>
-              {isSubmitting && <LinearProgress />}
+              {formikBag.isSubmitting && <LinearProgress />}
               <Button
                 variant="contained"
                 color="primary"
-                disabled={isSubmitting}
-                onClick={submitForm}
+                disabled={formikBag.isSubmitting}
+                onClick={formikBag.submitForm}
                 fullWidth
               >
                 Submit
               </Button>
             </Form>
           )}
-        </Formik>
+        />
       </div>
     </Container>
   );
