@@ -8,9 +8,9 @@ interface HCaptchaState {
 }
 
 interface HCaptchaProps {
-  onExpire?: () => any;
-  onError?: (event: string) => any;
-  onVerify?: (token: string) => any;
+  onExpire?: () => void;
+  onError?: (event: string) => void;
+  onVerify?: (token: string) => void;
   languageOverride?: string;
   sitekey: string;
   size?: "normal" | "compact" | "invisible";

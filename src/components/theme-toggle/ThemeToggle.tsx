@@ -8,12 +8,12 @@ type IconProps = {
   style: object;
 };
 
-const Dark = ({ icon, style }: IconProps) => (
+const Dark = ({ icon, style }: IconProps): JSX.Element => (
   <span className={clsx(styles.toggle, styles.dark)} style={style}>
     {icon}
   </span>
 );
-const Light = ({ icon, style }: IconProps) => (
+const Light = ({ icon, style }: IconProps): JSX.Element => (
   <span className={clsx(styles.toggle, styles.light)} style={style}>
     {icon}
   </span>
@@ -24,7 +24,7 @@ type ToggleProps = {
   setDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const ThemeToggle = ({ darkMode, setDarkMode }: ToggleProps) => {
+const ThemeToggle = ({ darkMode, setDarkMode }: ToggleProps): JSX.Element => {
   const darkIcon = "🌙";
   const darkIconStyle = { marginTop: "1px", marginLeft: "2px" };
   const lightIcon = "🌞";
@@ -33,7 +33,7 @@ const ThemeToggle = ({ darkMode, setDarkMode }: ToggleProps) => {
   return (
     <Toggle
       checked={darkMode}
-      onChange={() => setDarkMode(!darkMode)}
+      onChange={(): void => setDarkMode(!darkMode)}
       icons={{
         checked: <Dark icon={darkIcon} style={darkIconStyle} />,
         unchecked: <Light icon={lightIcon} style={lightIconStyle} />,

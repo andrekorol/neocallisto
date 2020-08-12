@@ -17,12 +17,12 @@ const useStyles = makeStyles(() =>
   })
 );
 
-export const PasswordInput = (props: TextFieldProps) => {
+export const PasswordInput = (props: TextFieldProps): JSX.Element => {
   const classes = useStyles();
 
   const [passwordIsMasked, setPasswordIsMasked] = useState(true);
 
-  const togglePasswordMask = () => {
+  const togglePasswordMask = (): void => {
     setPasswordIsMasked(!passwordIsMasked);
   };
 

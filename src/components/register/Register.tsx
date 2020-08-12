@@ -12,7 +12,7 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import CloseIcon from "@material-ui/icons/Close";
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { Field, Form, Formik } from "formik";
 import { CheckboxWithLabel, TextField } from "formik-material-ui";
 import React, { createRef, Suspense, useEffect, useState } from "react";
@@ -23,10 +23,6 @@ import scryptHash from "./password-hash";
 import { PasswordInput } from "./PasswordInput";
 
 const HCaptcha = React.lazy(() => import("@hcaptcha/react-hcaptcha"));
-
-if (process.env.NODE_ENV !== "production") {
-  require("dotenv").config();
-}
 
 interface MyFormValues {
   email: string;
@@ -62,7 +58,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Alert = (props: AlertProps) => {
+const Alert = (props: AlertProps): JSX.Element => {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 };
 
@@ -120,7 +116,7 @@ const Register: React.FC<{}> = () => {
               .max(100, "Must be 100 characters or less")
               .required("Required"),
           })}
-          onSubmit={(values, actions) => {
+          onSubmit={(values, actions): void => {
             if (!values.acceptedTerms) {
               setSnackBarMessage("You must accept the terms and conditions");
               setFormError(true);
@@ -149,7 +145,7 @@ const Register: React.FC<{}> = () => {
                   actions.setSubmitting(false);
                   alert("Account created sucessfully");
                 })
-                .catch((err) => {
+                .catch((err: AxiosError) => {
                   actions.setSubmitting(false);
                   const { error, message } = err.response?.data;
 
@@ -172,7 +168,7 @@ const Register: React.FC<{}> = () => {
                 });
             });
           }}
-          render={(formikBag) => (
+          render={(formikBag): JSX.Element => (
             <Form className={classes.form}>
               <Field
                 component={TextField}
@@ -228,7 +224,7 @@ const Register: React.FC<{}> = () => {
                   component={HCaptcha}
                   ref={captchaRef}
                   sitekey={siteKey}
-                  onVerify={(token: string) =>
+                  onVerify={(token: string): void =>
                     formikBag.setFieldValue("captcha", token)
                   }
                 />
@@ -236,7 +232,7 @@ const Register: React.FC<{}> = () => {
               <Snackbar
                 open={formError}
                 autoHideDuration={6000}
-                onClose={(_, reason) => {
+                onClose={(_, reason): void => {
                   if (reason === "clickaway") {
                     return;
                   }
@@ -251,7 +247,7 @@ const Register: React.FC<{}> = () => {
                     aria-label="close"
                     color="inherit"
                     className={classes.closeButton}
-                    onClick={() => setFormError(false)}
+                    onClick={(): void => setFormError(false)}
                   >
                     <CloseIcon />
                   </IconButton>

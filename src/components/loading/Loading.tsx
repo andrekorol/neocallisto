@@ -20,7 +20,7 @@ const useStyles = makeStyles(() =>
   })
 );
 
-const Loading = ({ type, color }: LoadingProps) => {
+const Loading = ({ type, color }: LoadingProps): JSX.Element => {
   const classes = useStyles();
 
   return (

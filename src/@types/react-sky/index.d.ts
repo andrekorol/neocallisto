@@ -10,6 +10,8 @@ declare module "react-sky" {
   }
 
   export default class Sky extends React.Component<SkyProps> {
-    constructor(props: SkyProps) {}
+    constructor(props: SkyProps) {
+      // do nothing.
+    }
   }
 }

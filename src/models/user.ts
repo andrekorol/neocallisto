@@ -25,7 +25,7 @@ const userSchema: Schema = new Schema({
   },
 });
 
-interface IUser extends Document {
+interface User extends Document {
   email: string;
   name: string;
   username: string;
@@ -33,6 +33,6 @@ interface IUser extends Document {
   hash: Buffer;
 }
 
-const User: Model<IUser> = model<IUser>("User", userSchema, "users");
+const UserModel: Model<User> = model<User>("User", userSchema, "users");
 
-module.exports = User;
+module.exports = UserModel;

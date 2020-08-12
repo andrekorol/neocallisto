@@ -1,18 +1,4 @@
 {
-  "plugins": ["react"],
-  "extends": [
-    "eslint:recommended",
-    "plugin:react/recommended",
-    "plugin:react-hooks/recommended",
-    "plugin:prettier/recommended"
-  ],
-  "parser": "babel-eslint",
-  "rules": {
-    "no-console": 0,
-    "react/prop-types": "off",
-    "react-hooks/rules-of-hooks": "error",
-    "react-hooks/exhaustive-deps": "warn"
-  },
   "env": {
     "browser": true,
     "node": true,
@@ -22,5 +8,31 @@
     "react": {
       "version": "detect"
     }
-  }
+  },
+  "overrides": [{
+      "files": ["*.js", "*.jsx"],
+      "parser": "babel-eslint",
+      "extends": ["eslint:recommended", "plugin:prettier/recommended"]
+    },
+    {
+      "files": ["*.ts", "*.tsx"],
+      "plugins": ["react", "react-hooks"],
+      "extends": [
+        "plugin:react/recommended",
+        "plugin:@typescript-eslint/recommended",
+        "prettier/@typescript-eslint",
+        "plugin:prettier/recommended"
+      ],
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": {
+        "ecmaVersion": 2020
+      },
+      "rules": {
+        "no-console": 0,
+        "react/prop-types": "off",
+        "react-hooks/rules-of-hooks": "error",
+        "react-hooks/exhaustive-deps": "warn"
+      }
+    }
+  ]
 }
