@@ -1,7 +1,7 @@
 "use strict";
 exports.__esModule = true;
-const mongoose_1 = require("mongoose");
-const userSchema = new mongoose_1.Schema({
+var mongoose_1 = require("mongoose");
+var userSchema = new mongoose_1.Schema({
   email: {
     type: String,
     required: true,
@@ -25,5 +25,5 @@ const userSchema = new mongoose_1.Schema({
     required: true,
   },
 });
-const User = mongoose_1.model("User", userSchema, "users");
-module.exports = User;
+var UserModel = mongoose_1.model("User", userSchema, "users");
+module.exports = UserModel;
