@@ -9,6 +9,10 @@ const PasswordStrengthBar = React.lazy(() =>
   import("react-password-strength-bar")
 );
 
+interface PasswordInputProps extends TextFieldProps {
+  showStrengthBar: boolean;
+}
+
 const useStyles = makeStyles(() =>
   createStyles({
     eye: {
@@ -17,7 +21,7 @@ const useStyles = makeStyles(() =>
   })
 );
 
-export const PasswordInput = (props: TextFieldProps) => {
+export const PasswordInput = (props: PasswordInputProps) => {
   const classes = useStyles();
 
   const [passwordIsMasked, setPasswordIsMasked] = useState(true);
@@ -51,13 +55,15 @@ export const PasswordInput = (props: TextFieldProps) => {
           ),
         }}
       />
-      <Suspense fallback={<div />}>
-        {password !== "" ? (
-          <PasswordStrengthBar password={password} />
-        ) : (
-          <div />
-        )}
-      </Suspense>
+      {props.showStrengthBar && (
+        <Suspense fallback={<div />}>
+          {password !== "" ? (
+            <PasswordStrengthBar password={password} />
+          ) : (
+            <div />
+          )}
+        </Suspense>
+      )}
     </>
   );
 };

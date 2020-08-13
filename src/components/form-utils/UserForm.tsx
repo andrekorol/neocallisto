@@ -1,6 +1,6 @@
 import { Avatar, Container, CssBaseline, Typography } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import WbSunnyIcon from "@material-ui/icons/WbSunny";
 import React from "react";
 
 type UserFormProps = {
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const UserForm = ({ formTitle, formikForm }: UserFormProps) => {
+export const UserForm = ({ formTitle, formikForm }: UserFormProps) => {
   const classes = useStyles();
 
   return (
@@ -31,7 +31,7 @@ const UserForm = ({ formTitle, formikForm }: UserFormProps) => {
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
-          <AccountCircleIcon />
+          <WbSunnyIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
           {formTitle}
@@ -41,5 +41,3 @@ const UserForm = ({ formTitle, formikForm }: UserFormProps) => {
     </Container>
   );
 };
-
-export default UserForm;
