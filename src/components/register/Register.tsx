@@ -49,9 +49,6 @@ const useStyles = makeStyles((theme: Theme) =>
       width: "100%", // Fix IE 11 issue.
       marginTop: theme.spacing(1),
     },
-    eye: {
-      cursor: "pointer",
-    },
     closeButton: {
       padding: theme.spacing(0.5),
     },
