@@ -24,7 +24,7 @@ import { PasswordInput } from "./PasswordInput";
 
 const HCaptcha = React.lazy(() => import("@hcaptcha/react-hcaptcha"));
 
-interface MyFormValues {
+interface RegisterFormValues {
   email: string;
   name: string;
   username: string;
@@ -63,7 +63,7 @@ const Alert = (props: AlertProps) => {
 };
 
 const Register = () => {
-  const initialValues: MyFormValues = {
+  const initialValues: RegisterFormValues = {
     email: "",
     name: "",
     username: "",
