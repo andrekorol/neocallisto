@@ -58,11 +58,11 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Alert = (props: AlertProps): JSX.Element => {
+const Alert = (props: AlertProps) => {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 };
 
-const Register: React.FC<{}> = () => {
+const Register = () => {
   const initialValues: MyFormValues = {
     email: "",
     name: "",
@@ -116,7 +116,7 @@ const Register: React.FC<{}> = () => {
               .max(100, "Must be 100 characters or less")
               .required("Required"),
           })}
-          onSubmit={(values, actions): void => {
+          onSubmit={(values, actions) => {
             if (!values.acceptedTerms) {
               setSnackBarMessage("You must accept the terms and conditions");
               setFormError(true);
@@ -168,7 +168,7 @@ const Register: React.FC<{}> = () => {
                 });
             });
           }}
-          render={(formikBag): JSX.Element => (
+          render={(formikBag) => (
             <Form className={classes.form}>
               <Field
                 component={TextField}
@@ -224,7 +224,7 @@ const Register: React.FC<{}> = () => {
                   component={HCaptcha}
                   ref={captchaRef}
                   sitekey={siteKey}
-                  onVerify={(token: string): void =>
+                  onVerify={(token: string) =>
                     formikBag.setFieldValue("captcha", token)
                   }
                 />
@@ -232,7 +232,7 @@ const Register: React.FC<{}> = () => {
               <Snackbar
                 open={formError}
                 autoHideDuration={6000}
-                onClose={(_, reason): void => {
+                onClose={(_, reason) => {
                   if (reason === "clickaway") {
                     return;
                   }
@@ -247,7 +247,7 @@ const Register: React.FC<{}> = () => {
                     aria-label="close"
                     color="inherit"
                     className={classes.closeButton}
-                    onClick={(): void => setFormError(false)}
+                    onClick={() => setFormError(false)}
                   >
                     <CloseIcon />
                   </IconButton>

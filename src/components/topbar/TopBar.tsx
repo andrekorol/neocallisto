@@ -17,7 +17,7 @@ type TopBarProps = {
   setDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const TopBar = ({ darkMode, setDarkMode }: TopBarProps): JSX.Element => {
+const TopBar = ({ darkMode, setDarkMode }: TopBarProps) => {
   const classes = useStyles();
 
   return (

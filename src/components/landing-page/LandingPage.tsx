@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const LandingPage = (): JSX.Element => {
+const LandingPage = () => {
   const classes = useStyles();
 
   const navigate = useNavigate();
@@ -62,7 +62,7 @@ const LandingPage = (): JSX.Element => {
               variant="contained"
               color="primary"
               size="large"
-              onClick={(): void => navigate("register")}
+              onClick={() => navigate("register")}
             >
               Sign Up to start using the app
             </Button>
