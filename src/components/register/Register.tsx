@@ -1,15 +1,7 @@
-import {
-  Avatar,
-  Button,
-  Container,
-  CssBaseline,
-  LinearProgress,
-  Typography,
-} from "@material-ui/core";
+import { Button, LinearProgress } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import Snackbar from "@material-ui/core/Snackbar";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import CloseIcon from "@material-ui/icons/Close";
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
 import axios, { AxiosError } from "axios";
@@ -18,6 +10,7 @@ import { CheckboxWithLabel, TextField } from "formik-material-ui";
 import React, { createRef, Suspense, useEffect, useState } from "react";
 import * as Yup from "yup";
 import Loading from "../loading";
+import UserForm from "../user-form";
 import HCaptchaComponent from "./HCaptcha";
 import scryptHash from "./password-hash";
 import { PasswordInput } from "./PasswordInput";
@@ -35,16 +28,6 @@ interface RegisterFormValues {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    paper: {
-      marginTop: theme.spacing(2),
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-    },
-    avatar: {
-      margin: theme.spacing(1),
-      backgroundColor: theme.palette.secondary.main,
-    },
     form: {
       width: "100%", // Fix IE 11 issue.
       marginTop: theme.spacing(1),
@@ -87,15 +70,9 @@ const Register = () => {
   const captchaRef = createRef<HCaptchaComponent>();
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <AccountCircleIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Create account
-        </Typography>
+    <UserForm
+      formTitle="Create account"
+      formikForm={
         <Formik
           initialValues={initialValues}
           validationSchema={Yup.object({
@@ -263,8 +240,8 @@ const Register = () => {
             </Form>
           )}
         />
-      </div>
-    </Container>
+      }
+    />
   );
 };
 
