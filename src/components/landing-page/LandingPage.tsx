@@ -67,7 +67,12 @@ const LandingPage = () => {
               Sign Up to start using the app
             </Button>
             <Typography variant="h5">OR</Typography>
-            <Button variant="contained" color="secondary" size="small">
+            <Button
+              variant="contained"
+              color="secondary"
+              size="small"
+              onClick={() => navigate("login")}
+            >
               Log In if you already have an account
             </Button>
           </Box>

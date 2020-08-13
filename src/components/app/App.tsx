@@ -3,6 +3,7 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import React, { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Loading from "../loading";
+import Login from "../login";
 import TopBar from "../topbar";
 
 const LandingPage = lazy(() => import("../landing-page"));
@@ -44,6 +45,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="register" element={<Register />} />
+            <Route path="login" element={<Login />} />
           </Routes>
         </Suspense>
       </BrowserRouter>
