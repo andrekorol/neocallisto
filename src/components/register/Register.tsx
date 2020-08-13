@@ -9,11 +9,10 @@ import { Field, Form, Formik } from "formik";
 import { CheckboxWithLabel, TextField } from "formik-material-ui";
 import React, { createRef, Suspense, useEffect, useState } from "react";
 import * as Yup from "yup";
+import { PasswordInput, UserForm } from "../form-utils";
 import Loading from "../loading";
-import UserForm from "../user-form";
 import HCaptchaComponent from "./HCaptcha";
 import scryptHash from "./password-hash";
-import { PasswordInput } from "./PasswordInput";
 
 const HCaptcha = React.lazy(() => import("@hcaptcha/react-hcaptcha"));
 
@@ -71,7 +70,7 @@ const Register = () => {
 
   return (
     <UserForm
-      formTitle="Create account"
+      formTitle="Register to start using NeoCallisto"
       formikForm={
         <Formik
           initialValues={initialValues}
@@ -176,6 +175,7 @@ const Register = () => {
               />
               <Field
                 component={PasswordInput}
+                showStrengthBar
                 variant="outlined"
                 margin="normal"
                 fullWidth
@@ -235,7 +235,7 @@ const Register = () => {
                 onClick={formikBag.submitForm}
                 fullWidth
               >
-                Submit
+                Create Account
               </Button>
             </Form>
           )}
