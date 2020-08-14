@@ -193,15 +193,17 @@ const Register = () => {
                 }}
               />
               <Suspense fallback={<Loading />}>
-                <Field
-                  name="captcha"
-                  component={HCaptcha}
-                  ref={captchaRef}
-                  sitekey={siteKey}
-                  onVerify={(token: string) =>
-                    formikBag.setFieldValue("captcha", token)
-                  }
-                />
+                {siteKey && (
+                  <Field
+                    name="captcha"
+                    component={HCaptcha}
+                    ref={captchaRef}
+                    sitekey={siteKey}
+                    onVerify={(token: string) =>
+                      formikBag.setFieldValue("captcha", token)
+                    }
+                  />
+                )}
               </Suspense>
               <Snackbar
                 open={formError}
