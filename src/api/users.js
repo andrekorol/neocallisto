@@ -4,12 +4,6 @@ const { getHash } = require("../server/password");
 
 const router = express.Router();
 
-router.get("/", (_, res) => {
-  User.find()
-    .then((users) => res.json(users))
-    .catch((err) => console.error(err));
-});
-
 router.post("/", (req, res) => {
   let { email, name, username, password, salt } = req.body;
   password = Uint8Array.from(Object.values(password));
