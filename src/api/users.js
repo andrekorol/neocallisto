@@ -1,11 +1,12 @@
 const express = require("express");
 const User = require("../models/user");
 const { getHash } = require("../server/password");
+const { verify } = require("hcaptcha");
 
 const router = express.Router();
 
 router.post("/", (req, res) => {
-  let { email, name, username, password, salt } = req.body;
+  let { email, name, username, password, salt, captcha } = req.body;
   password = Uint8Array.from(Object.values(password));
   salt = Uint8Array.from(Object.values(salt));
   getHash(password, salt).then((hash) => {
@@ -26,6 +27,9 @@ router.post("/", (req, res) => {
         });
       });
   });
+  verify(process.env.HCAPTCHA_SECRETKEY, captcha)
+    .then((data) => console.log("Success verifying HCaptcha token", data))
+    .catch(console.error);
 });
 
 module.exports = router;

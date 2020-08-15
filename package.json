@@ -35,6 +35,7 @@
     "express": "^4.17.1",
     "formik": "^2.1.5",
     "formik-material-ui": "^3.0.0-alpha.0",
+    "hcaptcha": "^0.0.2",
     "history": "^5.0.0",
     "libsodium-wrappers": "^0.7.8",
     "mongoose": "^5.9.27",
