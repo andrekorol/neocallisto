@@ -107,7 +107,7 @@ const Register = () => {
             scryptHash(values.password, seed).then((passwordHash) => {
               axios
                 .post(
-                  "/api/users",
+                  "/api/users/register",
                   Object.assign({}, values, {
                     password: passwordHash,
                     salt: seed,

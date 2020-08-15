@@ -5,7 +5,7 @@ const { verify } = require("hcaptcha");
 
 const router = express.Router();
 
-router.post("/", (req, res) => {
+router.post("/register", (req, res) => {
   let { email, name, username, password, salt, captcha } = req.body;
   password = Uint8Array.from(Object.values(password));
   salt = Uint8Array.from(Object.values(salt));
