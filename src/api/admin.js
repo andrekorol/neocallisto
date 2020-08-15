@@ -1,10 +1,6 @@
 const express = require("express");
 const { getSeed } = require("../server/password");
 
-if (process.env.NODE_ENV !== "production") {
-  require("dotenv").config();
-}
-
 const router = express.Router();
 
 router.get("/sitekey", (_, res) => {
