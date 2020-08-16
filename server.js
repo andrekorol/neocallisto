@@ -6,7 +6,6 @@ const { initDB } = require("./src/server/database");
 const history = require("connect-history-api-fallback");
 const users = require("./src/api/users");
 const admin = require("./src/api/admin");
-// const { createProxyMiddleware } = require("http-proxy-middleware");
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
@@ -20,13 +19,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(history());
-// app.use(
-//   "/api",
-//   createProxyMiddleware({
-//     target: process.env.DOMAIN_NAME,
-//     changeOrigin: true,
-//   })
-// );
+
 app.use("/api/users", users);
 app.use("/api/admin", admin);
 
