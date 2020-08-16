@@ -1,15 +1,16 @@
 const express = require("express");
 const User = require("../models/user");
-const { getHash } = require("../server/password");
+const { getPsswdHash, genericHash } = require("../server/password");
 const { verify } = require("hcaptcha");
 
 const router = express.Router();
 
 router.post("/register", (req, res) => {
-  let { email, name, username, password, salt, captcha } = req.body;
-  password = Uint8Array.from(Object.values(password));
-  salt = Uint8Array.from(Object.values(salt));
-  getHash(password, salt).then((hash) => {
+  const { email, name, username, captcha } = req.body;
+  const password = new Uint8Array(Object.values(req.body.password));
+  let salt = new Uint8Array(Object.values(req.body.salt));
+
+  getPsswdHash(password, salt).then((hash) => {
     salt = Buffer.from(salt.buffer);
     hash = Buffer.from(hash.buffer);
     const newUser = new User({ email, name, username, salt, hash });
@@ -30,6 +31,57 @@ router.post("/register", (req, res) => {
   verify(process.env.HCAPTCHA_SECRETKEY, captcha)
     .then((data) => console.log("Success verifying HCaptcha token", data))
     .catch(console.error);
+});
+
+router.post("/seed", (req, res) => {
+  const { emailOrUsername } = req.body;
+  User.findOne(
+    { $or: [{ email: emailOrUsername }, { username: emailOrUsername }] },
+    "salt",
+    (err, user) => {
+      if (err) {
+        res.status(500).json(JSON.stringify(err));
+        return;
+      }
+      if (!user) {
+        genericHash(emailOrUsername).then((seed) => {
+          res.json({ seed });
+        });
+      } else {
+        const seed = new Uint8Array(user.salt);
+        res.json({ seed });
+      }
+    }
+  );
+});
+
+router.post("/login", (req, res) => {
+  const password = new Uint8Array(Object.values(req.body.password));
+  const salt = new Uint8Array(Object.values(req.body.salt));
+
+  getPsswdHash(password, salt).then((hash) => {
+    const { emailOrUsername } = req.body;
+    User.findOne(
+      {
+        $or: [
+          {
+            email: emailOrUsername,
+          },
+          {
+            username: emailOrUsername,
+          },
+        ],
+      },
+      "password",
+      (err, user) => {
+        if (err) {
+          res.status(500).json(JSON.stringify(err));
+          return;
+        }
+        console.log(user);
+      }
+    );
+  });
 });
 
 module.exports = router;

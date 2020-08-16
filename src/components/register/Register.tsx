@@ -10,9 +10,9 @@ import { CheckboxWithLabel, TextField } from "formik-material-ui";
 import React, { createRef, Suspense, useEffect, useState } from "react";
 import * as Yup from "yup";
 import { PasswordInput, UserForm } from "../form-utils";
+import scryptHash from "../form-utils/password-hash";
 import Loading from "../loading";
 import HCaptchaComponent from "./HCaptcha";
-import scryptHash from "./password-hash";
 
 const HCaptcha = React.lazy(() => import("@hcaptcha/react-hcaptcha"));
 
@@ -63,7 +63,7 @@ const Register = () => {
     axios.get("/admin/sitekey").then((resp) => setSiteKey(resp.data));
     axios
       .get("/admin/seed")
-      .then((res) => setSeed(Uint8Array.from(Object.values(res.data))));
+      .then((res) => setSeed(new Uint8Array(Object.values(res.data))));
   }, []);
 
   const captchaRef = createRef<HCaptchaComponent>();
