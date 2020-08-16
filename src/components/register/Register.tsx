@@ -60,9 +60,9 @@ const Register = () => {
   const [seed, setSeed] = useState(new Uint8Array());
 
   useEffect(() => {
-    axios.get("/admin/sitekey").then((resp) => setSiteKey(resp.data));
+    axios.get("/api/admin/sitekey").then((resp) => setSiteKey(resp.data));
     axios
-      .get("/admin/seed")
+      .get("/api/admin/seed")
       .then((res) => setSeed(new Uint8Array(Object.values(res.data))));
   }, []);
 
