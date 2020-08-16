@@ -23,7 +23,7 @@ app.use(history());
 app.use(
   "/api",
   createProxyMiddleware({
-    target: `http://localhost:${port}`,
+    target: process.env.DOMAIN_NAME,
     changeOrigin: true,
   })
 );
