@@ -58,6 +58,7 @@
   },
   "scripts": {
     "start": "node server.js",
+    "heroku-postbuild": "npm install -g yarn && yarn install && yarn build",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -90,5 +91,8 @@
     "eslint-plugin-react-hooks": "^4.0.8",
     "prettier": "^2.0.5"
   },
-  "proxy": "http://localhost:5000"
+  "proxy": "http://localhost:5000",
+  "engines": {
+    "node": "14.x"
+  }
 }
