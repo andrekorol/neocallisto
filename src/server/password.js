@@ -13,8 +13,8 @@ exports.getPsswdHash = async (password, salt) => {
       sodium.crypto_pwhash_BYTES_MIN,
       password,
       salt,
-      sodium.crypto_pwhash_OPSLIMIT_INTERACTIVE,
-      sodium.crypto_pwhash_MEMLIMIT_INTERACTIVE,
+      1,
+      33554432, // 32 MB
       sodium.crypto_pwhash_ALG_DEFAULT
     );
     resolve(hash);
