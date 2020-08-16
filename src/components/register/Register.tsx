@@ -119,6 +119,7 @@ const Register = () => {
                   alert("Account created sucessfully");
                 })
                 .catch((err: AxiosError) => {
+                  console.log(err);
                   actions.setSubmitting(false);
                   const { error, message } = err.response?.data;
 
