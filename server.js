@@ -6,19 +6,39 @@ const { initDB } = require("./src/server/database");
 const history = require("connect-history-api-fallback");
 const users = require("./src/api/users");
 const admin = require("./src/api/admin");
+const session = require("express-session");
+const passport = require("passport");
+const cookieParser = require("cookie-parser");
+const Redis = require("ioredis");
+const RedisStore = require("connect-redis")(session);
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
 
-initDB();
+const redis = new Redis(process.env.REDIS_URL);
 
-const port = process.env.PORT || 5000;
+// Connect to the MongoDB instance
+initDB();
 
 const app = express();
 app.use(cors());
+app.use(cookieParser(process.env.COOKIE_SIGN_SECRET));
 app.use(bodyParser.json());
 app.use(history());
+
+app.use(
+  session({
+    secret: process.env.COOKIE_SIGN_SECRET,
+    name: "neocallisto-session",
+    store: new RedisStore({ client: redis }),
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use("/api/users", users);
 app.use("/api/admin", admin);
@@ -31,6 +51,8 @@ app.get("/", (req, res) => {
     }
   });
 });
+
+const port = process.env.PORT || 5000;
 
 app
   .listen(port, () => {
