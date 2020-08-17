@@ -25,7 +25,7 @@ const app = express();
 app.use(cors());
 app.use(cookieParser(process.env.COOKIE_SIGN_SECRET));
 app.use(bodyParser.json());
-// app.use(history());
+app.use(history());
 
 app.use(
   session({
@@ -54,13 +54,13 @@ app.get(
   }
 );
 
-// app.get("/", (req, res) => {
-//   res.sendFile(path.join(__dirname, "build/index.html"), function (err) {
-//     if (err) {
-//       res.status(500).send(err);
-//     }
-//   });
-// });
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "build/index.html"), function (err) {
+    if (err) {
+      res.status(500).send(err);
+    }
+  });
+});
 
 const port = process.env.PORT || 5000;
 
