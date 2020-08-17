@@ -44,6 +44,16 @@ app.use("/api/users", users);
 app.use("/api/admin", admin);
 
 app.use(express.static(path.join(__dirname, "build")));
+
+app.get(
+  "/.well-known/acme-challenge/zO38HeOkZhRUSa8q36o3cQ5wO4L1xRIi3mui-Caf0z0",
+  (_, res) => {
+    res.send(
+      "zO38HeOkZhRUSa8q36o3cQ5wO4L1xRIi3mui-Caf0z0.UgSTbNQv6YmcLJfS0_tBs7aCcKxPxGnXJXTo_q4Lx7I"
+    );
+  }
+);
+
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "build/index.html"), function (err) {
     if (err) {
