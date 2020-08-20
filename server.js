@@ -7,7 +7,6 @@ const history = require("connect-history-api-fallback");
 const users = require("./src/api/users");
 const admin = require("./src/api/admin");
 const session = require("express-session");
-const passport = require("passport");
 const cookieParser = require("cookie-parser");
 const Redis = require("ioredis");
 const RedisStore = require("connect-redis")(session);
@@ -36,9 +35,6 @@ app.use(
     saveUninitialized: false,
   })
 );
-
-app.use(passport.initialize());
-app.use(passport.session());
 
 app.use("/api/users", users);
 app.use("/api/admin", admin);

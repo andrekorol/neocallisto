@@ -2,6 +2,7 @@ const express = require("express");
 const User = require("../models/user");
 const { getPsswdHash, genericHash } = require("../server/password");
 const { verify } = require("hcaptcha");
+const { timingSafeEqual } = require("crypto");
 
 const router = express.Router();
 
@@ -58,6 +59,7 @@ router.post("/seed", (req, res) => {
 router.post("/login", (req, res) => {
   const password = new Uint8Array(Object.values(req.body.password));
   const salt = new Uint8Array(Object.values(req.body.salt));
+  const authenticationErrorMsg = "Invalid username or password";
 
   getPsswdHash(password, salt).then((hash) => {
     const { emailOrUsername } = req.body;
@@ -72,13 +74,23 @@ router.post("/login", (req, res) => {
           },
         ],
       },
-      "password",
+      "hash",
       (err, user) => {
         if (err) {
           res.status(500).json(JSON.stringify(err));
           return;
         }
-        console.log(user);
+        if (!user) {
+          res.status(401).send(authenticationErrorMsg);
+          return;
+        }
+        const storedHash = new Uint8Array(user.hash);
+        if (timingSafeEqual(hash, storedHash)) {
+          req.session.user = user._id;
+          res.sendStatus(200);
+        } else {
+          res.status(401).send(authenticationErrorMsg);
+        }
       }
     );
   });

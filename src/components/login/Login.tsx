@@ -1,13 +1,14 @@
 import { Button, Grid, LinearProgress } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import axios, { AxiosResponse } from "axios";
-import { Field, Form, Formik } from "formik";
+import axios, { AxiosError, AxiosResponse } from "axios";
+import { Field, Form, Formik, FormikHelpers } from "formik";
 import { TextField } from "formik-material-ui";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
 import { PasswordInput, UserForm } from "../form-utils";
 import scryptHash from "../form-utils/password-hash";
+import SnackbarErrorAlert from "../form-utils/SnackbarErrorAlert";
 
 interface LoginFormValues {
   emailOrUsername: string;
@@ -31,7 +32,17 @@ const Login = () => {
 
   const classes = useStyles();
 
-  // const [seed, setSeed] = useState(new Uint8Array());
+  const [formError, setFormError] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const handleLoginError = (
+    err: AxiosError,
+    actions: FormikHelpers<LoginFormValues>
+  ) => {
+    actions.setSubmitting(false);
+    setSnackbarMessage(err.response?.data);
+    setFormError(true);
+  };
 
   return (
     <UserForm
@@ -50,13 +61,20 @@ const Login = () => {
               .then((resp: AxiosResponse) => {
                 const seed = new Uint8Array(Object.values(resp.data.seed));
                 scryptHash(password, seed).then((passwordHash) => {
-                  axios.post("/api/users/login", {
-                    password: passwordHash,
-                    salt: seed,
-                    emailOrUsername,
-                  });
+                  axios
+                    .post("/api/users/login", {
+                      password: passwordHash,
+                      salt: seed,
+                      emailOrUsername,
+                    })
+                    .then((res: AxiosResponse) => {
+                      actions.setSubmitting(false);
+                      console.log(res);
+                    })
+                    .catch((err) => handleLoginError(err, actions));
                 });
-              });
+              })
+              .catch((err) => handleLoginError(err, actions));
           }}
           render={(formikBag) => (
             <Form className={classes.form}>
@@ -78,6 +96,11 @@ const Login = () => {
                 name="password"
                 label="Password"
                 autoComplete="password"
+              />
+              <SnackbarErrorAlert
+                formError={formError}
+                setFormError={setFormError}
+                snackbarMessage={snackbarMessage}
               />
               {formikBag.isSubmitting && <LinearProgress />}
               <Button
