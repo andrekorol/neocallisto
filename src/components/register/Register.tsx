@@ -1,9 +1,5 @@
 import { Button, LinearProgress } from "@material-ui/core";
-import IconButton from "@material-ui/core/IconButton";
-import Snackbar from "@material-ui/core/Snackbar";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import CloseIcon from "@material-ui/icons/Close";
-import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
 import axios, { AxiosError } from "axios";
 import { Field, Form, Formik } from "formik";
 import { CheckboxWithLabel, TextField } from "formik-material-ui";
@@ -11,6 +7,7 @@ import React, { createRef, Suspense, useEffect, useState } from "react";
 import * as Yup from "yup";
 import { PasswordInput, UserForm } from "../form-utils";
 import scryptHash from "../form-utils/password-hash";
+import SnackbarErrorAlert from "../form-utils/SnackbarErrorAlert";
 import Loading from "../loading";
 import HCaptchaComponent from "./HCaptcha";
 
@@ -31,15 +28,8 @@ const useStyles = makeStyles((theme: Theme) =>
       width: "100%", // Fix IE 11 issue.
       marginTop: theme.spacing(1),
     },
-    closeButton: {
-      padding: theme.spacing(0.5),
-    },
   })
 );
-
-const Alert = (props: AlertProps) => {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-};
 
 const Register = () => {
   const initialValues: RegisterFormValues = {
@@ -54,7 +44,7 @@ const Register = () => {
   const classes = useStyles();
 
   const [formError, setFormError] = useState(false);
-  const [snackBarMessage, setSnackBarMessage] = useState("");
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const [siteKey, setSiteKey] = useState("");
   const [seed, setSeed] = useState(new Uint8Array());
@@ -91,14 +81,14 @@ const Register = () => {
           })}
           onSubmit={(values, actions) => {
             if (!values.acceptedTerms) {
-              setSnackBarMessage("You must accept the terms and conditions");
+              setSnackbarMessage("You must accept the terms and conditions");
               setFormError(true);
               actions.setSubmitting(false);
               return;
             }
 
             if (!values.captcha) {
-              setSnackBarMessage("You must prove that you are a human");
+              setSnackbarMessage("You must prove that you are a human");
               setFormError(true);
               actions.setSubmitting(false);
               return;
@@ -135,7 +125,7 @@ const Register = () => {
                     );
                   }
 
-                  setSnackBarMessage(
+                  setSnackbarMessage(
                     `${message} Please check the form fields and then try again.`
                   );
                   setFormError(true);
@@ -206,30 +196,11 @@ const Register = () => {
                   />
                 )}
               </Suspense>
-              <Snackbar
-                open={formError}
-                autoHideDuration={6000}
-                onClose={(_, reason) => {
-                  if (reason === "clickaway") {
-                    return;
-                  }
-
-                  setFormError(false);
-                }}
-                anchorOrigin={{ horizontal: "center", vertical: "top" }}
-              >
-                <Alert severity="error">
-                  {snackBarMessage}
-                  <IconButton
-                    aria-label="close"
-                    color="inherit"
-                    className={classes.closeButton}
-                    onClick={() => setFormError(false)}
-                  >
-                    <CloseIcon />
-                  </IconButton>
-                </Alert>
-              </Snackbar>
+              <SnackbarErrorAlert
+                formError={formError}
+                setFormError={setFormError}
+                snackbarMessage={snackbarMessage}
+              />
               {formikBag.isSubmitting && <LinearProgress />}
               <Button
                 variant="contained"
