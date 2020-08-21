@@ -17,10 +17,9 @@ router.post("/register", (req, res) => {
     const newUser = new User({ email, name, username, salt, hash });
     newUser
       .save()
-      .then(() => {
-        res.json({
-          message: "Created account successfully",
-        });
+      .then((user) => {
+        req.session.user = user._id;
+        res.send(user._id);
       })
       .catch((err) => {
         res.status(400).json({
@@ -87,12 +86,26 @@ router.post("/login", (req, res) => {
         const storedHash = new Uint8Array(user.hash);
         if (timingSafeEqual(hash, storedHash)) {
           req.session.user = user._id;
-          res.sendStatus(200);
+          res.send(user._id);
         } else {
           res.status(401).send(authenticationErrorMsg);
         }
       }
     );
+  });
+});
+
+router.get("/current-user", (req, res) => {
+  if (!req.session.user) {
+    res.send("none");
+    return;
+  }
+  User.findOne({ _id: req.session.user }, (err, user) => {
+    if (err || !user) {
+      res.send("none");
+    } else {
+      res.send(user._id);
+    }
   });
 });
 

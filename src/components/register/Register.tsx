@@ -1,11 +1,13 @@
 import { Button, LinearProgress } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { Field, Form, Formik } from "formik";
 import { CheckboxWithLabel, TextField } from "formik-material-ui";
 import React, { createRef, Suspense, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { PasswordInput, UserForm } from "../form-utils";
+import RegisterProps from "../form-utils/LoggedUserProps";
 import scryptHash from "../form-utils/password-hash";
 import SnackbarErrorAlert from "../form-utils/SnackbarErrorAlert";
 import Loading from "../loading";
@@ -31,7 +33,10 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Register = () => {
+const Register = ({ loggedUser, setLoggedUser }: RegisterProps) => {
+  const navigate = useNavigate();
+  if (loggedUser && loggedUser !== "none") navigate("/", { replace: true });
+
   const initialValues: RegisterFormValues = {
     email: "",
     name: "",
@@ -103,10 +108,11 @@ const Register = () => {
                     salt: seed,
                   })
                 )
-                .then(() => {
+                .then((res: AxiosResponse) => {
                   captchaRef.current?.resetCaptcha();
                   actions.setSubmitting(false);
-                  alert("Account created sucessfully");
+                  setLoggedUser(res.data);
+                  navigate("/");
                 })
                 .catch((err: AxiosError) => {
                   console.log(err);

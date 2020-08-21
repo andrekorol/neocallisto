@@ -4,9 +4,10 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { Field, Form, Formik, FormikHelpers } from "formik";
 import { TextField } from "formik-material-ui";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { PasswordInput, UserForm } from "../form-utils";
+import LoginProps from "../form-utils/LoggedUserProps";
 import scryptHash from "../form-utils/password-hash";
 import SnackbarErrorAlert from "../form-utils/SnackbarErrorAlert";
 
@@ -24,7 +25,10 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const Login = () => {
+const Login = ({ loggedUser, setLoggedUser }: LoginProps) => {
+  const navigate = useNavigate();
+  if (loggedUser && loggedUser !== "none") navigate("/", { replace: true });
+
   const initialValues: LoginFormValues = {
     emailOrUsername: "",
     password: "",
@@ -69,7 +73,8 @@ const Login = () => {
                     })
                     .then((res: AxiosResponse) => {
                       actions.setSubmitting(false);
-                      console.log(res);
+                      setLoggedUser(res.data);
+                      navigate("/");
                     })
                     .catch((err) => handleLoginError(err, actions));
                 });
