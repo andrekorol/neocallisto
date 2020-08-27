@@ -253,3 +253,6 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+# Cloudflare Origin Certificate
+privkey.pem
+certificate.pem
