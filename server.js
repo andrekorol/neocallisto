@@ -21,6 +21,7 @@ const redis = new Redis(process.env.REDIS_URL);
 initDB();
 
 const app = express();
+app.set("trust proxy", true);
 app.use(cors());
 app.use(cookieParser(process.env.COOKIE_SIGN_SECRET));
 app.use(bodyParser.json());
@@ -30,6 +31,11 @@ app.use(
   session({
     secret: process.env.COOKIE_SIGN_SECRET,
     name: "neocallisto-session",
+    cookie: {
+      httpOnly: true,
+      secure: true,
+      sameSite: true,
+    },
     store: new RedisStore({ client: redis }),
     resave: false,
     saveUninitialized: false,
