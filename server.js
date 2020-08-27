@@ -10,9 +10,6 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const Redis = require("ioredis");
 const RedisStore = require("connect-redis")(session);
-const http = require("http");
-const https = require("https");
-const { readFileSync, fstat } = require("fs");
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
@@ -57,10 +54,12 @@ app.get("/", (req, res) => {
   });
 });
 
-const sslOptions = {
-  key: readFileSync("privkey.pem"),
-  cert: readFileSync("certificate.pem"),
-};
+const port = process.env.PORT || 5000;
 
-https.createServer(sslOptions, app).listen(443);
-http.createServer(app).listen(80);
+app
+  .listen(port, () => {
+    console.log(`Server started on port ${port}`);
+  })
+  .on("error", (err) => {
+    console.error(err);
+  });
