@@ -110,7 +110,7 @@ router.get("/current-user", (req, res) => {
 });
 
 router.post("/logout", (req, res) => {
-  if (req.session.user) {
+  if (req.session.cookie) {
     req.session.destroy((err) => {
       if (err) {
         console.error(err);
