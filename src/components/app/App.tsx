@@ -39,7 +39,12 @@ const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <TopBar darkMode={darkMode} setDarkMode={setDarkMode} />
+      <TopBar
+        darkMode={darkMode}
+        setDarkMode={setDarkMode}
+        loggedUser={user}
+        setLoggedUser={setUser}
+      />
       <BrowserRouter>
         <Suspense
           fallback={
