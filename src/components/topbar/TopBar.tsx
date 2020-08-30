@@ -1,24 +1,31 @@
 import AppBar from "@material-ui/core/AppBar";
-import { createStyles, makeStyles } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import {
   SocialLink,
   SocialProvider,
 } from "@mui-treasury/components/socialLink";
 import { useRoundSocialLinkStyles } from "@mui-treasury/styles/socialLink/round";
+import axios from "axios";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import LoginProps from "../form-utils/LoggedUserProps";
 import ThemeToggle from "../theme-toggle";
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    themeToggle: {
+    toolbarRight: {
       marginLeft: "auto",
     },
     appTitle: {
       position: "absolute",
       left: "42%",
+    },
+    logoutButton: {
+      marginRight: theme.spacing(2),
     },
   })
 );
@@ -35,6 +42,14 @@ const TopBar = ({
   setLoggedUser,
 }: TopBarProps & LoginProps) => {
   const classes = useStyles();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    axios.post("/api/users/logout").then(() => {
+      setLoggedUser("none");
+      navigate("/", { replace: true });
+    });
+  };
 
   return (
     <AppBar position="static">
@@ -56,7 +71,18 @@ const TopBar = ({
             NeoCallisto
           </Typography>
         )}
-        <div className={classes.themeToggle}>
+        <div className={classes.toolbarRight}>
+          {loggedUser !== "none" && (
+            <Button
+              variant="contained"
+              color="secondary"
+              className={classes.logoutButton}
+              startIcon={<ExitToAppIcon />}
+              onClick={handleLogout}
+            >
+              Logout
+            </Button>
+          )}
           <ThemeToggle darkMode={darkMode} setDarkMode={setDarkMode} />
         </div>
       </Toolbar>

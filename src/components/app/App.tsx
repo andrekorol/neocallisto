@@ -39,12 +39,6 @@ const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <TopBar
-        darkMode={darkMode}
-        setDarkMode={setDarkMode}
-        loggedUser={user}
-        setLoggedUser={setUser}
-      />
       <BrowserRouter>
         <Suspense
           fallback={
@@ -54,6 +48,12 @@ const App = () => {
             />
           }
         >
+          <TopBar
+            darkMode={darkMode}
+            setDarkMode={setDarkMode}
+            loggedUser={user}
+            setLoggedUser={setUser}
+          />
           <Routes>
             <Route
               path="/"

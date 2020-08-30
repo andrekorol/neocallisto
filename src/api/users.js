@@ -109,4 +109,19 @@ router.get("/current-user", (req, res) => {
   });
 });
 
+router.post("/logout", (req, res) => {
+  if (req.session.user) {
+    req.session.destroy((err) => {
+      if (err) {
+        console.error(err);
+        res.sendStatus(500);
+        return;
+      }
+      res.sendStatus(200);
+    });
+  } else {
+    res.sendStatus(400);
+  }
+});
+
 module.exports = router;
