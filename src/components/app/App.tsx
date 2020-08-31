@@ -3,6 +3,7 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import axios from "axios";
 import React, { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import DateSelector from "../date-selector";
 import Loading from "../loading";
 import Login from "../login";
 import TopBar from "../topbar";
@@ -60,7 +61,7 @@ const App = () => {
               element={
                 user ? (
                   user !== "none" ? (
-                    <div>hi {user}</div>
+                    <DateSelector />
                   ) : (
                     <LandingPage />
                   )
