@@ -1,7 +1,9 @@
 import { Avatar, Container, CssBaseline, Typography } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import WbSunnyIcon from "@material-ui/icons/WbSunny";
-import React from "react";
+import React, { Suspense } from "react";
+
+const ParticlesBg = React.lazy(() => import("particles-bg"));
 
 type UserFormProps = {
   formTitle: string;
@@ -27,17 +29,22 @@ export const UserForm = ({ formTitle, formikForm }: UserFormProps) => {
   const classes = useStyles();
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <WbSunnyIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          {formTitle}
-        </Typography>
-        {formikForm}
-      </div>
-    </Container>
+    <div>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <div className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <WbSunnyIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            {formTitle}
+          </Typography>
+          {formikForm}
+        </div>
+      </Container>
+      <Suspense fallback={<div />}>
+        <ParticlesBg type="square" bg />
+      </Suspense>
+    </div>
   );
 };
