@@ -96,7 +96,7 @@ router.post("/login", (req, res) => {
 });
 
 router.get("/current-user", (req, res) => {
-  if (!req.session.cookie) {
+  if (!req.session.user) {
     res.send("none");
     return;
   }
