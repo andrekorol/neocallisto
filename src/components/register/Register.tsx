@@ -149,6 +149,7 @@ const Register = ({ loggedUser, setLoggedUser }: RegisterProps) => {
                 type="email"
                 label="Email"
                 autoComplete="email"
+                autoFocus
               />
               <Field
                 component={TextField}

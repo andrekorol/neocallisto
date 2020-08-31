@@ -92,6 +92,7 @@ const Login = ({ loggedUser, setLoggedUser }: LoginProps) => {
                 type="text"
                 label="Email or username"
                 autoComplete="email"
+                autoFocus
               />
               <Field
                 component={PasswordInput}
