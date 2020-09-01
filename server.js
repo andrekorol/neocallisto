@@ -10,7 +10,9 @@ const callisto = require("./src/api/callisto");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const Redis = require("ioredis");
-const RedisStore = require("connect-redis")(session);
+const SessionRedisStore = require("connect-redis")(session);
+const rateLimit = require("express-rate-limit");
+const RateLimitRedisStore = require("rate-limit-redis");
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
@@ -37,11 +39,24 @@ app.use(
       secure: true,
       sameSite: true,
     },
-    store: new RedisStore({ client: redis }),
+    store: new SessionRedisStore({ client: redis }),
     resave: false,
     saveUninitialized: false,
   })
 );
+
+const rateLimitWindow = 15 * 60; // 15 minutes, in seconds
+const apiLimiter = rateLimit({
+  store: new RateLimitRedisStore({
+    client: redis,
+    expiry: rateLimitWindow,
+  }),
+  windowMs: rateLimitWindow * 1000,
+  max: 100, // limit each IP to 100 requests per windowMs (15 minutes)
+});
+
+// apply rate limiting to API requests
+app.use("/api/", apiLimiter);
 
 app.use("/api/users", users);
 app.use("/api/admin", admin);
