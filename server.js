@@ -6,6 +6,7 @@ const { initDB } = require("./src/server/database");
 const history = require("connect-history-api-fallback");
 const users = require("./src/api/users");
 const admin = require("./src/api/admin");
+const callisto = require("./src/api/callisto");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const Redis = require("ioredis");
@@ -44,6 +45,7 @@ app.use(
 
 app.use("/api/users", users);
 app.use("/api/admin", admin);
+app.use("/api/callisto", callisto);
 
 app.use(express.static(path.join(__dirname, "build")));
 app.get("/", (req, res) => {
