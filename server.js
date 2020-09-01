@@ -13,6 +13,7 @@ const Redis = require("ioredis");
 const SessionRedisStore = require("connect-redis")(session);
 const rateLimit = require("express-rate-limit");
 const RateLimitRedisStore = require("rate-limit-redis");
+const csurf = require("csurf");
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
@@ -44,6 +45,9 @@ app.use(
     saveUninitialized: false,
   })
 );
+
+// Use a middleware to protect against CSRF attacks
+app.use(csurf({ cookie: true }));
 
 // Apply rate limiting to API requests
 const apiRateLimitWindow = 15 * 60; // 15 minutes, in seconds
