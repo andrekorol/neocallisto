@@ -47,9 +47,6 @@ app.use(
   })
 );
 
-// Use a middleware to protect against CSRF attacks
-app.use(csurf({ cookie: true }));
-
 // Automatically set HTTP headers to improve the application security
 app.use(helmet());
 
@@ -80,7 +77,7 @@ const staticLimiter = rateLimit({
     prefix: "static-rl",
   }),
   windowMs: staticRateLimitWindow * 1000,
-  max: 15,
+  max: 100,
 });
 app.use(staticLimiter);
 
