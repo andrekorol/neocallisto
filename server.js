@@ -45,22 +45,36 @@ app.use(
   })
 );
 
-const rateLimitWindow = 15 * 60; // 15 minutes, in seconds
+// Apply rate limiting to API requests
+const apiRateLimitWindow = 15 * 60; // 15 minutes, in seconds
 const apiLimiter = rateLimit({
   store: new RateLimitRedisStore({
     client: redis,
-    expiry: rateLimitWindow,
+    expiry: apiRateLimitWindow,
+    prefix: "api-rl",
   }),
-  windowMs: rateLimitWindow * 1000,
+  windowMs: apiRateLimitWindow * 1000,
   max: 100, // limit each IP to 100 requests per windowMs (15 minutes)
 });
-
-// apply rate limiting to API requests
 app.use("/api/", apiLimiter);
 
+// Set-up API endpoints
 app.use("/api/users", users);
 app.use("/api/admin", admin);
 app.use("/api/callisto", callisto);
+
+// Apply rate limiting to non-API requests
+const staticRateLimitWindow = 60; // 1 minute, in seconds
+const staticLimiter = rateLimit({
+  store: new RateLimitRedisStore({
+    client: redis,
+    expiry: staticRateLimitWindow,
+    prefix: "static-rl",
+  }),
+  windowMs: staticRateLimitWindow * 1000,
+  max: 15,
+});
+app.use(staticLimiter);
 
 app.use(express.static(path.join(__dirname, "build")));
 app.get("/", (req, res) => {
