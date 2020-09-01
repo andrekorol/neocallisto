@@ -48,7 +48,7 @@ app.use(
 );
 
 // Automatically set HTTP headers to improve the application security
-app.use(helmet());
+app.use(helmet({ contentSecurityPolicy: false }));
 
 // Apply rate limiting to API requests
 const apiRateLimitWindow = 15 * 60; // 15 minutes, in seconds
