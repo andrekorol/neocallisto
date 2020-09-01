@@ -1931,10 +1931,10 @@
     "@types/minimatch" "*"
     "@types/node" "*"
 
-"@types/hcaptcha__react-hcaptcha@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@types/hcaptcha__react-hcaptcha/-/hcaptcha__react-hcaptcha-0.1.1.tgz#3ab752fa0b4be5b3412835d5ebb4aeeab6e8f4a7"
-  integrity sha512-9aW/L8mVPe8zAmFFOj416A+2jKXo8/XaPinlOJB63g5/ssX/62cM+QJ6jU/xDNzamaajjKDI0BFXxpW/ab+x1Q==
+"@types/hcaptcha__react-hcaptcha@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@types/hcaptcha__react-hcaptcha/-/hcaptcha__react-hcaptcha-0.1.2.tgz#9733cf2189fd497e618d021c05e9ca001297c6ce"
+  integrity sha512-veunVdc+8BUV2kOZeoBZuu+zOwviNP9SDbzuVqUa7ZqdfzsERFxvSVa097zBJQxfvbkvXbRCCo/vwNR8AKGHcg==
   dependencies:
     "@types/react" "*"
 
