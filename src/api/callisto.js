@@ -19,8 +19,8 @@ router.post("/check-date", async (req, res) => {
       return;
     }
     res.sendStatus(200);
-  } catch (err) {
-    res.status(500).send(err);
+  } catch {
+    res.sendStatus(500);
   }
 });
 
