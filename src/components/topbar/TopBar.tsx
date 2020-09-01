@@ -10,7 +10,8 @@ import {
 } from "@mui-treasury/components/socialLink";
 import { useRoundSocialLinkStyles } from "@mui-treasury/styles/socialLink/round";
 import axios from "axios";
-import React from "react";
+import mailgo from "mailgo";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import LoginProps from "../form-utils/LoggedUserProps";
 import ThemeToggle from "../theme-toggle";
@@ -44,6 +45,10 @@ const TopBar = ({
   const classes = useStyles();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    mailgo();
+  }, []);
+
   const handleLogout = () => {
     axios.post("/api/users/logout").then(() => {
       setLoggedUser("none");
@@ -64,6 +69,15 @@ const TopBar = ({
           <SocialLink
             brand={"Twitter"}
             href={"https://twitter.com/andrekorol1"}
+          />
+        </SocialProvider>
+        <SocialProvider useStyles={useRoundSocialLinkStyles}>
+          <SocialLink
+            brand={"Envelope"}
+            href="#mailgo"
+            data-address="support"
+            data-domain="neocallisto.com"
+            className={darkMode ? "dark" : ""}
           />
         </SocialProvider>
         {loggedUser !== "none" && (
