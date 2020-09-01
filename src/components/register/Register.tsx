@@ -115,7 +115,6 @@ const Register = ({ loggedUser, setLoggedUser }: RegisterProps) => {
                   navigate("/");
                 })
                 .catch((err: AxiosError) => {
-                  console.log(err);
                   actions.setSubmitting(false);
                   const { error, message } = err.response?.data;
 
