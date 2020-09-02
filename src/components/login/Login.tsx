@@ -4,7 +4,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { Field, Form, Formik, FormikHelpers } from "formik";
 import { TextField } from "formik-material-ui";
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { PasswordInput, UserForm } from "../form-utils";
 import LoginProps from "../form-utils/LoggedUserProps";
@@ -27,7 +27,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Login = ({ loggedUser, setLoggedUser }: LoginProps) => {
   const navigate = useNavigate();
-  if (loggedUser && loggedUser !== "none") navigate("/", { replace: true });
 
   const initialValues: LoginFormValues = {
     emailOrUsername: "",
@@ -47,6 +46,8 @@ const Login = ({ loggedUser, setLoggedUser }: LoginProps) => {
     setSnackbarMessage(err.response?.data);
     setFormError(true);
   };
+
+  if (loggedUser && loggedUser !== "none") return <Navigate to="/" replace />;
 
   return (
     <UserForm

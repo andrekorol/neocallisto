@@ -4,7 +4,7 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { Field, Form, Formik } from "formik";
 import { CheckboxWithLabel, TextField } from "formik-material-ui";
 import React, { createRef, Suspense, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { PasswordInput, UserForm } from "../form-utils";
 import RegisterProps from "../form-utils/LoggedUserProps";
@@ -35,7 +35,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Register = ({ loggedUser, setLoggedUser }: RegisterProps) => {
   const navigate = useNavigate();
-  if (loggedUser && loggedUser !== "none") navigate("/", { replace: true });
 
   const initialValues: RegisterFormValues = {
     email: "",
@@ -62,6 +61,8 @@ const Register = ({ loggedUser, setLoggedUser }: RegisterProps) => {
   }, []);
 
   const captchaRef = createRef<HCaptchaComponent>();
+
+  if (loggedUser && loggedUser !== "none") return <Navigate to="/" replace />;
 
   return (
     <UserForm
