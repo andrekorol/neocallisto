@@ -31,7 +31,7 @@
     "@types/react-toggle": "^4.0.2",
     "@types/unorm": "^1.3.28",
     "@types/yup": "^0.29.6",
-    "axios": "^0.19.2",
+    "axios": "^0.20.0",
     "babel-loader": "^8.1.0",
     "bluebird": "^3.7.2",
     "cheerio": "^1.0.0-rc.3",
