@@ -9292,10 +9292,10 @@ lz-string@^1.4.4:
   resolved "https://registry.yarnpkg.com/lz-string/-/lz-string-1.4.4.tgz#c0d8eaf36059f705796e1e344811cf4c498d3a26"
   integrity sha1-wNjq82BZ9wV5bh40SBHPTEmNOiY=
 
-mailgo@^0.9.18:
-  version "0.9.18"
-  resolved "https://registry.yarnpkg.com/mailgo/-/mailgo-0.9.18.tgz#6cd201f82208c94aa7054498c62e6bdf1fb08a46"
-  integrity sha512-qw12rh+t+sg5ye5mF1FV2/bza77QjRZ0kOi1ekUlepP3UDMQ2tphDWmZtfgCacCiisp+k1e74VAAS4nzClWS9w==
+mailgo@^0.10.4:
+  version "0.10.4"
+  resolved "https://registry.yarnpkg.com/mailgo/-/mailgo-0.10.4.tgz#922d4aeaf612d0979c396c71203c2792417b616a"
+  integrity sha512-WaysS6YKh210noJ0uMNTvQ+XBIo08nZ/jhx+dCz/J8vqIgusNU2ysLuDRHhtv6Cm+5Rq7qFa1vVb9A+EUIx7hQ==
 
 make-dir@^2.0.0, make-dir@^2.1.0:
   version "2.1.0"
