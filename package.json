@@ -58,7 +58,7 @@
     "mongoose": "^5.10.9",
     "node-fetch": "^2.6.1",
     "particles-bg": "^2.5.0",
-    "plotly.js": "^1.56.0",
+    "plotly.js": "^1.57.0",
     "prop-types": "^15.7.2",
     "rate-limit-redis": "^2.0.0",
     "react": "^16.14.0",
