@@ -68,7 +68,7 @@
     "react-plotly.js": "^2.5.0",
     "react-router": "^6.0.0-beta.0",
     "react-router-dom": "^6.0.0-beta.0",
-    "react-scripts": "^3.4.3",
+    "react-scripts": "^3.4.4",
     "react-sky": "^1.1.0",
     "react-toggle": "^4.1.1",
     "scrypt-js": "^3.0.1",
