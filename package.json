@@ -62,7 +62,7 @@
     "prop-types": "^15.7.2",
     "rate-limit-redis": "^2.0.0",
     "react": "^16.14.0",
-    "react-dom": "^16.13.1",
+    "react-dom": "^16.14.0",
     "react-loading": "^2.0.3",
     "react-password-strength-bar": "^0.3.2",
     "react-plotly.js": "^2.5.0",
