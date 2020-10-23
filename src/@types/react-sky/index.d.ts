@@ -2,7 +2,7 @@ declare module "react-sky" {
   import React from "react";
 
   interface SkyProps {
-    images: Record<string, unknown>;
+    images: object;
     how: number;
     time?: number;
     size?: string;
