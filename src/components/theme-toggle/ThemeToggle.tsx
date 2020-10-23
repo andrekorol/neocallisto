@@ -5,7 +5,7 @@ import styles from "./styles.module.css";
 
 type IconProps = {
   icon: string;
-  style: object;
+  style: Record<string, unknown>;
 };
 
 const Dark = ({ icon, style }: IconProps) => (

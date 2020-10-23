@@ -5,8 +5,8 @@ import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import { TextField, TextFieldProps } from "formik-material-ui";
 import React, { Suspense, useState } from "react";
 
-const PasswordStrengthBar = React.lazy(() =>
-  import("react-password-strength-bar")
+const PasswordStrengthBar = React.lazy(
+  () => import("react-password-strength-bar")
 );
 
 interface PasswordInputProps extends TextFieldProps {
